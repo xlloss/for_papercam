@@ -357,7 +357,8 @@ typedef struct _AITS_MIPI_DATA_LANE
     AIT_REG_W   MIPI_DATA_DELAY [VIF_NUM];                              // 0x24
     	/*-DEFINE-----------------------------------------------------*/
 		#define MIPI_DATA_DLY_MASK       	0x0F
-		#define MIPI_DATA_DLY(_a)        	(_a & MIPI_DATA_DLY_MASK)
+//		#define MIPI_DATA_DLY(_a)        	(_a & MIPI_DATA_DLY_MASK)
+		#define MIPI_DATA_DLY(_a)        	(_a & MIPI_CLK_DLY_MASK)
 		#define MIPI_DATA_SYNC_FIFO_SEL     0x10
 		#define MIPI_DATA_RECOVERY          0x20
 		

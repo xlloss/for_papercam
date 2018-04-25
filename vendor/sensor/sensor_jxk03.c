@@ -840,19 +840,19 @@ void SNR_Cust_SetGain(MMP_UBYTE ubSnrSel, MMP_ULONG ulGain)
 	gsSensorFunction->MMPF_Sensor_GetReg(ubSnrSel, 0x8C, &sensor_rg8C);
 	gsSensorFunction->MMPF_Sensor_GetReg(ubSnrSel, 0xAF, &sensor_rgAF);
 
-	if(((H<<4)+L) < 16)
-	{	
-		gsSensorFunction->MMPF_Sensor_SetReg(ubSnrSel, 0x5C, sensor_rg5C | 0x40);		
-		gsSensorFunction->MMPF_Sensor_SetReg(ubSnrSel, 0x67, sensor_rg67 | 0x40);		
-		gsSensorFunction->MMPF_Sensor_SetReg(ubSnrSel, 0x8C, sensor_rg8C | 0x03);		
-		gsSensorFunction->MMPF_Sensor_SetReg(ubSnrSel, 0xAF, sensor_rgAF | 0xC0);
-	}
-	else
-	{
-		gsSensorFunction->MMPF_Sensor_SetReg(ubSnrSel, 0x5C, sensor_rg5C & 0xBF);
-		gsSensorFunction->MMPF_Sensor_SetReg(ubSnrSel, 0x67, sensor_rg67 & 0xBF);
-		gsSensorFunction->MMPF_Sensor_SetReg(ubSnrSel, 0x8C, sensor_rg8C & 0xFC);
-	}
+//	if(((H<<4)+L) < 16)
+//	{	
+//		gsSensorFunction->MMPF_Sensor_SetReg(ubSnrSel, 0x5C, sensor_rg5C | 0x40);		
+//		gsSensorFunction->MMPF_Sensor_SetReg(ubSnrSel, 0x67, sensor_rg67 | 0x40);		
+//		gsSensorFunction->MMPF_Sensor_SetReg(ubSnrSel, 0x8C, sensor_rg8C | 0x03);		
+//		gsSensorFunction->MMPF_Sensor_SetReg(ubSnrSel, 0xAF, sensor_rgAF | 0xC0);
+//	}
+//	else
+//	{
+//		gsSensorFunction->MMPF_Sensor_SetReg(ubSnrSel, 0x5C, sensor_rg5C & 0xBF);
+//		gsSensorFunction->MMPF_Sensor_SetReg(ubSnrSel, 0x67, sensor_rg67 & 0xBF);
+//		gsSensorFunction->MMPF_Sensor_SetReg(ubSnrSel, 0x8C, sensor_rg8C & 0xFC);
+//	}
 
 	//dbg_printf(3,"EV:%x lux:%x again:%x GetGain():%x \r\n",ISP_IF_AE_GetDbgData(0), ISP_IF_AE_GetDbgData(1), (H<<4)+L, ISP_IF_AE_GetGain());
 

@@ -395,10 +395,11 @@ MMP_ERR MMPF_Sensor_GetParam(MMP_UBYTE ubSnrSel, MMPF_SENSOR_PARAM param_type, v
 MMP_ERR MMPF_Sensor_SetParam(MMP_UBYTE ubSnrSel, MMPF_SENSOR_PARAM param_type, void* param);
 MMP_ERR MMPF_Sensor_Set3AInterrupt(MMP_UBYTE ubSnrSel, MMP_BOOL bEnable);
 MMP_ERR MMPF_Sensor_LinkFunctionTable(void);
-MMP_ERR MMPF_Sensor_Wait3AConverge(MMP_UBYTE ubSnrSel);
+MMP_ERR MMPF_Sensor_Wait3AConverge(MMP_UBYTE ubSnrSel, MMP_UBYTE first_frame);
 MMP_BOOL MMPF_Sensor_Is3AConverge(MMP_UBYTE ubSnrSel);
 MMP_BOOL MMPF_Sensor_SetNightVisionMode(MMP_UBYTE ubSnrSel,MMP_UBYTE val) ;
 MMP_BOOL MMPF_Sensor_SetTest(MMP_UBYTE ubSnrSel, MMP_UBYTE val );
+MMP_BOOL MMPF_Sensor_SetFirstFrameGain(MMP_ULONG gain);
 
 extern MMP_ERR MMPF_SensorDrv_Register(MMP_UBYTE ubSnrSel, MMPF_SENSOR_CUSTOMER* pCust);
 

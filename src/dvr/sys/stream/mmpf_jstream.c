@@ -469,6 +469,8 @@ void MMPF_JStream_Task(void)
     MMPF_OS_FLAGS wait_flags = 0, flags;
     MMPF_JSTREAM_FRAMEINFO frminfo;
     int fram_cnt = 0;
+    MMP_ULONG pulGain;
+
     RTNA_DBG_Str3("JStream_Task()\r\n");
 
     MMPF_JStream_TaksInit();
@@ -482,12 +484,17 @@ void MMPF_JStream_Task(void)
 
         if (flags & DSC_FLAG_TRIGGER_STILL) {
             if (fram_cnt == 0) {
-                ISP_IF_AE_SetGain();
+                printc(">>>test 28\r\n");
+                //MMPF_ISP_GetShutter(&pulGain);
+                //printc("MMPF_ISP_GetShutter %d\r\n", pulGain);
+                MMPF_Sensor_SetFirstFrameGain(600);
+                printc(">>>Wait3AConverge 1\r\n");
+                MMPF_Sensor_Wait3AConverge(PRM_SENSOR, 1);
+            } else {
+                printc(">>>Wait3AConverge 0\r\n");
+                MMPF_Sensor_Wait3AConverge(PRM_SENSOR, 0);
             }
             fram_cnt = 1;
-            printc("fram_cnt %d\r\n", fram_cnt);
-
-            MMPF_Sensor_Wait3AConverge(PRM_SENSOR);
             MMPF_DSC_EncodeJpeg(PRM_SENSOR, MMPF_DSC_SRC_SENSOR,
                                 MMPF_DSC_SHOTMODE_SINGLE);
             MMPF_DSC_GetJpeg(&frminfo.addr, &frminfo.size, &frminfo.time);

@@ -35,8 +35,12 @@
 #define SENSOR_DSC_MODE 	        (1)
 #define SENSOR_VIDEO_MODE 	        (2)
 
+#define MAX_AE_CONVERGE_FRAME_NUM_FIRST   (15)
+#define MIN_AE_CONVERGE_FRAME_NUM_FIRST   (14)
+
 #define MAX_AE_CONVERGE_FRAME_NUM   (6)
 #define MIN_AE_CONVERGE_FRAME_NUM   (5)
+
 
 //==============================================================================
 //

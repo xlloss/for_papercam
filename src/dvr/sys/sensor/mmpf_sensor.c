@@ -1134,19 +1134,39 @@ MMP_ERR MMPF_Sensor_LinkFunctionTable(void)
     return MMP_ERR_NONE;
 }
 
+MMP_BOOL MMPF_Sensor_SetFirstFrameGain(MMP_ULONG gain)
+{
+    ISP_IF_AE_SetGain(gain, ISP_IF_AE_GetGainBase());
+    return 0;
+}
+
 //------------------------------------------------------------------------------
 //  Function    : MMPF_Sensor_Wait3AConverge
 //  Description :
 //------------------------------------------------------------------------------
-MMP_ERR MMPF_Sensor_Wait3AConverge(MMP_UBYTE ubSnrSel)
+MMP_ERR MMPF_Sensor_Wait3AConverge(MMP_UBYTE ubSnrSel, MMP_UBYTE first_frame)
 {
     MMP_ULONG ulframeCnt = 0;
+    int ae_con_frame_min, ae_con_frame_max;
+
+    if (first_frame == 1) {
+        ae_con_frame_min = MIN_AE_CONVERGE_FRAME_NUM_FIRST;
+        ae_con_frame_max = MAX_AE_CONVERGE_FRAME_NUM_FIRST;
+    } else {
+        ae_con_frame_min = MIN_AE_CONVERGE_FRAME_NUM;
+        ae_con_frame_max = MAX_AE_CONVERGE_FRAME_NUM;
+    }
+
+//        ae_con_frame_min = MIN_AE_CONVERGE_FRAME_NUM;
+//        ae_con_frame_max = MAX_AE_CONVERGE_FRAME_NUM;
+
     do {
         MMPF_Sensor_GetParam(ubSnrSel, MMPF_SENSOR_ISP_FRAME_COUNT, &ulframeCnt);
 #ifdef PROJECT_LD
         if ((ulframeCnt >= MIN_AE_CONVERGE_FRAME_NUM) && (1))
 #else
-        if ((ulframeCnt >= MIN_AE_CONVERGE_FRAME_NUM) && (ISP_IF_AE_AEConvergeCheck() == 1))
+        //if ((ulframeCnt >= MIN_AE_CONVERGE_FRAME_NUM) && (ISP_IF_AE_AEConvergeCheck() == 1))
+        if ((ulframeCnt >= ae_con_frame_min))
 #endif            
         {
 #if SUPPORT_UVC_JPEG==0
@@ -1158,7 +1178,7 @@ MMP_ERR MMPF_Sensor_Wait3AConverge(MMP_UBYTE ubSnrSel)
             break;
         }
         MMPF_OS_Sleep(5); // for 120fps, the delay time should less than 8ms
-    } while (ulframeCnt <= MAX_AE_CONVERGE_FRAME_NUM);
+    } while (ulframeCnt <= ae_con_frame_max);
     
     
     // SEAN : 20170510 , slow down AE 
