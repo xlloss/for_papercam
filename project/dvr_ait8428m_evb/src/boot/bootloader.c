@@ -523,9 +523,11 @@ void BootLoader_Task(void *p_arg)
     AITPS_GBL   pGBL = AITC_BASE_GBL;
     MMP_ULONG   kernel_at = NO_AIT_HDR_FW_LOAD_AD ;
     char        *cmdline=0;
+    RTNA_DBG_Str0("BootLoader_Task()@0\r\n");
     RTNA_DBG_Str0("BootLoader_Task()\r\n");
     MMPF_PLL_GetGroupFreq(CLK_GRP_DRAM, &ulDramFreq);
-
+    RTNA_DBG_Str0("BootLoader_Task()@1\r\n");
+    printc("ulDramFreq %d\r\n", ulDramFreq);
     #if(USE_DIV_CONST)
     ulDramFreq = divu1000(ulDramFreq);
     #else
@@ -554,15 +556,18 @@ void BootLoader_Task(void *p_arg)
         return;
     }
 #endif
+    RTNA_DBG_Str0("BootLoader_Task()@2\r\n");
 #if (DRAM_ID != DRAM_DDR)
     BootLoader_Load_Config("ddr3");
     MMPF_DRAM_LoadSetting(STORAGE_TEMP_BUFFER);
 #endif    
-
+    RTNA_DBG_Str0("BootLoader_Task()@2-1\r\n");
+    printc("ulDramFreq %d\r\n", ulDramFreq);
     MMPF_DRAM_ScanNewLockCore(MMPS_System_GetConfig()->stackMemoryType,
                             &(MMPS_System_GetConfig()->ulStackMemorySize),
                             ulDramFreq,
                             MMPS_System_GetConfig()->stackMemoryMode);
+    RTNA_DBG_Str0("BootLoader_Task()@2-2\r\n");
     //*(volatile MMP_UBYTE *)0x80006610 |= 0x01;
 
     /*Bandwidth Configuration*/
@@ -575,6 +580,7 @@ void BootLoader_Task(void *p_arg)
         BootLoader_Save_Config("ddr3");
     }
 #endif
+    RTNA_DBG_Str0("BootLoader_Task()@3\r\n");
     #if (LOAD_USER_SETTINGS)
     BootLoader_Load_Config("user");
     #endif
@@ -645,7 +651,7 @@ void BootLoader_Task(void *p_arg)
     #endif
 retry:    
     BootStartAddr = ulSifAddr ;
-    
+    RTNA_DBG_Str0("BootLoader_Task()@4\r\n");
     printc("m-boot:0x%08X\r\n", ulSifAddr);
     MMPF_SF_FastReadData(ulSifAddr, STORAGE_TEMP_BUFFER, 512);   //MiniBoot Header Table
     ulSifAddr = ulSifAddr + (0x1 << 12)*(pIndexTable->ulTotalSectorsInLayer);

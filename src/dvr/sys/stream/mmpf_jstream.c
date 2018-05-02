@@ -481,12 +481,6 @@ void MMPF_JStream_Task(void)
                             0, &flags);
 
         if (flags & DSC_FLAG_TRIGGER_STILL) {
-            if (fram_cnt == 0) {
-                ISP_IF_AE_SetGain();
-            }
-            fram_cnt = 1;
-            printc("fram_cnt %d\r\n", fram_cnt);
-
             MMPF_Sensor_Wait3AConverge(PRM_SENSOR);
             MMPF_DSC_EncodeJpeg(PRM_SENSOR, MMPF_DSC_SRC_SENSOR,
                                 MMPF_DSC_SHOTMODE_SINGLE);

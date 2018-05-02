@@ -60,7 +60,7 @@ GRP_CLK_CFG gGrpClkCfg[CLK_GRP_NUM] = {
     { DPLL2, 1 }, // CLK_GRP_CPUA   528MHz
     { DPLL2, 1 }, // CLK_GRP_CPUB   528MHz
 #if (DRAM_ID == DRAM_DDR)
-    { DPLL0, 2 }, // CLK_GRP_DRAM   200MHz/180MHz
+    { DPLL0, 3 }, // CLK_GRP_DRAM   200MHz/180MHz
 #endif
 #if (DRAM_ID == DRAM_DDR3)||(DRAM_ID == DRAM_DDR2)
     { DPLL0, 1 }, // CLK_GRP_DRAM   400MHz
@@ -82,7 +82,7 @@ GRP_CLK_CFG gGrpClkCfg[CLK_GRP_NUM] = {
     { DPLL2, 1 }, // CLK_GRP_CPUA   528MHz
     { DPLL2, 1 }, // CLK_GRP_CPUB   528MHz
 #if (DRAM_ID == DRAM_DDR)
-    { DPLL0, 2 }, // CLK_GRP_DRAM   200MHz/180MHz
+    { DPLL0, 4 }, // CLK_GRP_DRAM   200MHz/180MHz
 #endif
 #if (DRAM_ID == DRAM_DDR3)||(DRAM_ID == DRAM_DDR2)
     { DPLL0, 1 }, // CLK_GRP_DRAM   400MHz
@@ -104,7 +104,7 @@ GRP_CLK_CFG gGrpClkCfg[CLK_GRP_NUM] = {
     { DPLL2, 1 }, // CLK_GRP_CPUA   528MHz
     { DPLL2, 1 }, // CLK_GRP_CPUB   528MHz
 #if (DRAM_ID == DRAM_DDR)
-    { DPLL0, 2 }, // CLK_GRP_DRAM   200MHz/180MHz
+    { DPLL0, 3 }, // CLK_GRP_DRAM   200MHz/180MHz
 #endif
 #if (DRAM_ID == DRAM_DDR3)||(DRAM_ID == DRAM_DDR2)
     { DPLL0, 1 }, // CLK_GRP_DRAM   400MHz

@@ -45,6 +45,8 @@
 
 MMP_ULONG   gCpuFreqKHz;                ///< CPU clock freq. in unit of KHz
 MMP_ULONG   gGrpFreqKHz[CLK_GRP_NUM];   ///< clock freq. of every group (KHz)
+const static MMPF_PLL_SETTINGS m_DramPll_8428D32MB = 
+    {DPLL0_M_DIV_2,     DPLL0_N(45),    DPLL0_P_DIV_2,      0,      DPLL012_VCO_TYPE3,  540000};
 
 //Notes: MCV_V2 EXT_CLK is 24Mhz
 const static  MMPF_PLL_SETTINGS m_PllSettings[GRP_CLK_SRC_MAX] = 
@@ -481,8 +483,12 @@ static MMP_ERR MMPF_PLL_Setting(void)
 {
     AITPS_GBL pGBL = AITC_BASE_GBL;
     const MMPF_PLL_SETTINGS *pllSettings;
+    const MMPF_PLL_SETTINGS *drampllSettings;
+    MMP_UBYTE id = pGBL->GBL_CHIP_VER;
 
     pllSettings = m_PllSettings;
+
+    //RTNA_DBG_Str(0, "MMPF_PLL_Setting@1\r\n");
 
     //Step 1: Bypass PLL0, PLL1, PLL2, PLL3, PLL4 & PLL5
     pGBL->GBL_DPLL0_CFG |= DPLL_BYPASS;
@@ -496,30 +502,50 @@ static MMP_ERR MMPF_PLL_Setting(void)
 
     //Step 2: Update PLL to the target frequency
     if (pllSettings[DPLL0].freq != EXT_CLK) {
-        //Adjust Analog gain settings
-        //below clcok region is (24 / M * N / P). It doesn't include post divider
-
-        // power-on & BIST off
-        pGBL->GBL_DPLL0_PWR = 0x00;// 0x5d02
-        // pre-divider
-        pGBL->GBL_DPLL0_M = pllSettings[DPLL0].M; // 0x5d03
-        // loop-divider
-        pGBL->GBL_DPLL0_N = pllSettings[DPLL0].N; // 0x5d04
-        // post-divider
-        pGBL->GBL_DPPL0_PARAM[0x00] = pllSettings[DPLL0].K; // 0x5d05
-        // PLL setting VCO 400~600MHz
-        pGBL->GBL_DPPL0_PARAM[0x01] = pllSettings[DPLL0].VCO; // 0x5d06
-        // PLL control setting CTAT
-        pGBL->GBL_DPPL0_PARAM[0x02] = 0xC0; // 0x5d07
-
-        //Update DPLL0 configuration
-        pGBL->GBL_DPLL0_CFG |= DPLL_UPDATE_PARAM; // 0x5d00
-
+        //RTNA_DBG_Str(0, "MMPF_PLL_Setting@2\r\n");
+        id &= GBL_CHIP_VER_MASK;
+        if (((MMP_UBYTE)id & 0x03) == 0x00) {
+            //RTNA_DBG_Str(0, "MMPF_PLL_Setting@3\r\n");
+            // dram PLL setting for 8428D 32MB dram.
+            drampllSettings = &m_DramPll_8428D32MB;
+            //Adjust Analog gain settings
+            //below clcok region is (24 / M * N / P). It doesn't include post divider
+            // power-on & BIST off
+            pGBL->GBL_DPLL0_PWR = 0x00;// 0x5d02
+            // pre-divider
+            pGBL->GBL_DPLL0_M = drampllSettings->M; // 0x5d03
+            // loop-divider
+            pGBL->GBL_DPLL0_N = drampllSettings->N; // 0x5d04
+            // post-divider
+            pGBL->GBL_DPPL0_PARAM[0x00] = drampllSettings->K; // 0x5d05
+            // PLL setting VCO 400~600MHz
+            pGBL->GBL_DPPL0_PARAM[0x01] = drampllSettings->VCO; // 0x5d06
+            // PLL control setting CTAT
+            pGBL->GBL_DPPL0_PARAM[0x02] = 0xC0; // 0x5d07
+            //Update DPLL0 configuration
+            pGBL->GBL_DPLL0_CFG |= DPLL_UPDATE_PARAM; // 0x5d00    
+        } else {
+            //Adjust Analog gain settings
+            //below clcok region is (24 / M * N / P). It doesn't include post divider
+            // power-on & BIST off
+            pGBL->GBL_DPLL0_PWR = 0x00;// 0x5d02
+            // pre-divider
+            pGBL->GBL_DPLL0_M = pllSettings[DPLL0].M; // 0x5d03
+            // loop-divider
+            pGBL->GBL_DPLL0_N = pllSettings[DPLL0].N; // 0x5d04
+            // post-divider
+            pGBL->GBL_DPPL0_PARAM[0x00] = pllSettings[DPLL0].K; // 0x5d05
+            // PLL setting VCO 400~600MHz
+            pGBL->GBL_DPPL0_PARAM[0x01] = pllSettings[DPLL0].VCO; // 0x5d06
+            // PLL control setting CTAT
+            pGBL->GBL_DPPL0_PARAM[0x02] = 0xC0; // 0x5d07
+            //Update DPLL0 configuration
+            pGBL->GBL_DPLL0_CFG |= DPLL_UPDATE_PARAM; // 0x5d00
+        }
         MMPF_PLL_PowerUp(DPLL0, 0);
         MMPF_PLL_WaitCount(50);
         MMPF_PLL_PowerUp(DPLL0, 1);
-    }
-    else {
+    } else {
         MMPF_PLL_PowerUp(DPLL0, 0);
     }
 
@@ -724,11 +750,11 @@ MMP_ERR MMPF_PLL_Initialize(void)
     AITPS_GBL pGBL = AITC_BASE_GBL;
 	MMP_UBYTE id = pGBL->GBL_CHIP_VER;
 
-	if ((id & 0x03) == 0x00) {
-        // 8428D dram speed can't be 200MHz, set to 360MHz/2 = 180MHz.
-        gGrpClkCfg[CLK_GRP_DRAM].src = DPLL1;
-        gGrpClkCfg[CLK_GRP_DRAM].div = 2;
-    }
+//	if ((id & 0x03) == 0x00) {
+//        // 8428D dram speed can't be 200MHz, set to 360MHz/2 = 180MHz.
+//        gGrpClkCfg[CLK_GRP_DRAM].src = DPLL0;
+//        gGrpClkCfg[CLK_GRP_DRAM].div = 3;
+//    }
 	#endif
     /* #if(USE_DIV_CONST) */
         /* for(grp = CLK_GRP_GBL; grp < CLK_GRP_NUM; grp++) { */
@@ -796,8 +822,7 @@ MMP_ERR MMPF_PLL_Initialize(void)
                     /* [> gGrpFreqKHz[grp] = m_PllSettings[gGrpClkCfg[grp].src].freq /1; <] */
         /* } */
     for(grp = CLK_GRP_GBL; grp < CLK_GRP_NUM; grp++) {
-        gGrpFreqKHz[grp] = m_PllSettings[gGrpClkCfg[grp].src].freq /
-                                         gGrpClkCfg[grp].div;
+        gGrpFreqKHz[grp] = m_PllSettings[gGrpClkCfg[grp].src].freq / gGrpClkCfg[grp].div;
     }
 
     #if (CPU_ID == CPU_A)
