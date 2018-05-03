@@ -1328,6 +1328,13 @@ void UI_Main_Task(void *p_arg)
 #if CONFIG_HW_FOR_DRAM_TIMIMG_TEST
     dump_reg();
 #endif
+    printc("UI_Task()\r\n");
+
+    while(1) {
+        printc("UI_Task()\r\n");
+        MMPF_OS_Sleep(100);
+    };
+
     RTNA_DBG_Str3("UI_Task()\r\n");
     UI_Init_MenuSetting(&menu);
     UI_Get_BootCapture(&menu);

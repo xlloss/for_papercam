@@ -1016,7 +1016,7 @@ void ____PLL_Config____(){ruturn;} //dummy
 
 #if (BIND_SENSOR_IMX326==1)
   #define PLL_CONFIG   PLL_FOR_BURNING
-#elif (BIND_SENSOR_OV4689==1)||(BIND_SENSOR_JXK03==1)
+#elif (BIND_SENSOR_OV4689==1)/* ||(BIND_SENSOR_JXK03==1) */
   #define PLL_CONFIG   PLL_FOR_PERFORMANCE
 #elif ((BIND_SENSOR_PS5220==1)||(BIND_SENSOR_PS5250==1) ) // for low power test
   #define PLL_CONFIG  PLL_FOR_POWER

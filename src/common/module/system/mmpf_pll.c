@@ -824,6 +824,11 @@ MMP_ERR MMPF_PLL_Initialize(void)
     for(grp = CLK_GRP_GBL; grp < CLK_GRP_NUM; grp++) {
         gGrpFreqKHz[grp] = m_PllSettings[gGrpClkCfg[grp].src].freq / gGrpClkCfg[grp].div;
     }
+    //chrison
+    if (((MMP_UBYTE)id & 0x03) == 0x00) {
+            gGrpFreqKHz[CLK_GRP_DRAM] = m_DramPll_8428D32MB.freq/gGrpClkCfg[CLK_GRP_DRAM].div;
+    }
+
 
     #if (CPU_ID == CPU_A)
     gCpuFreqKHz = gGrpFreqKHz[CLK_GRP_CPUA];

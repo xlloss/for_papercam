@@ -248,25 +248,25 @@ unsigned int ADC_Get_Effect(void)
 	unsigned int key_map;
     int adc_channel = 1;
     unsigned short adc_value;
-	
-    adc_value = ADC_Get(adc_channel);
-    printc("adc_value %d\r\n", adc_value);
-    MMPF_OS_Sleep(10);
-    if (adc_value < (KEY_0 + ADC_OFFSET) && adc_value > (KEY_0 - ADC_OFFSET)) {
-		key_map = ISP_IMAGE_EFFECT_SEPIA;
-        change_effect_mode(ISP_IMAGE_EFFECT_SEPIA);
-    } else if (adc_value < (KEY_1 + ADC_OFFSET) && adc_value > (KEY_1 - ADC_OFFSET)) {
-		key_map = ISP_IMAGE_EFFECT_NEGATIVE;
-        change_effect_mode(ISP_IMAGE_EFFECT_NEGATIVE);
-    } else if (adc_value < (KEY_2 + ADC_OFFSET) && adc_value > (KEY_2 - ADC_OFFSET)) {
-        key_map = ISP_IMAGE_EFFECT_GREY;
-        change_effect_mode(ISP_IMAGE_EFFECT_GREY);
-    } else if (adc_value < (KEY_3 + ADC_OFFSET) && adc_value > (KEY_3 - ADC_OFFSET)) {
-        key_map = ISP_IMAGE_EFFECT_NORMAL;
-        change_effect_mode(ISP_IMAGE_EFFECT_NORMAL);
-    } else {
-        printc ("No This Key %d\r\n", adc_value);
-	}
+	printc("ADC_Get_Effect\r\n");
+//    adc_value = ADC_Get(adc_channel);
+//    printc("adc_value %d\r\n", adc_value);
+//    MMPF_OS_Sleep(10);
+//    if (adc_value < (KEY_0 + ADC_OFFSET) && adc_value > (KEY_0 - ADC_OFFSET)) {
+//		key_map = ISP_IMAGE_EFFECT_SEPIA;
+//        change_effect_mode(ISP_IMAGE_EFFECT_SEPIA);
+//    } else if (adc_value < (KEY_1 + ADC_OFFSET) && adc_value > (KEY_1 - ADC_OFFSET)) {
+//		key_map = ISP_IMAGE_EFFECT_NEGATIVE;
+//        change_effect_mode(ISP_IMAGE_EFFECT_NEGATIVE);
+//    } else if (adc_value < (KEY_2 + ADC_OFFSET) && adc_value > (KEY_2 - ADC_OFFSET)) {
+//        key_map = ISP_IMAGE_EFFECT_GREY;
+//        change_effect_mode(ISP_IMAGE_EFFECT_GREY);
+//    } else if (adc_value < (KEY_3 + ADC_OFFSET) && adc_value > (KEY_3 - ADC_OFFSET)) {
+//        key_map = ISP_IMAGE_EFFECT_NORMAL;
+//        change_effect_mode(ISP_IMAGE_EFFECT_NORMAL);
+//    } else {
+//        printc ("No This Key %d\r\n", adc_value);
+//	}
 
 	return key_map;
 }

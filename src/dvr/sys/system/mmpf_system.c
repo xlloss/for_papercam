@@ -881,11 +881,15 @@ void MMPF_SYS_Task(void)
     MMPF_SYS_ReadCoreID();
     printc("SYS_Task[%X] "RTOS_IPC_VER"\r\n",gbSystemCoreID);
     //printc("%d time %d\r\n",pGBL->GBL_CLK_DIV, OSTime);
-    
+//    while (TRUE) {
+//        printc("MMPF_SYS_Task\r\n");
+//    };
 
     #if defined(ALL_FW)
     _SYS_InstallModules();
+    if (0) {
     _SYS_InitialDriver();
+    }
     #endif
 
     while (TRUE) {

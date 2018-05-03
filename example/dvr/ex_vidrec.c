@@ -1113,7 +1113,7 @@ int Jpeg_Open(MMP_ULONG id, MMPS_JSTREAM_PROPT *propt)
     printc("Jpeg%d_Open\r\n", id);
     //printc("key_map 0x%x\r\n", key_map);
 
-	change_effect_mode(ADC_Get_Effect());
+	//change_effect_mode(ADC_Get_Effect());
     m_JpgStream[id].obj = MMPS_JStream_Open(propt);
     if (!m_JpgStream[id].obj) {
         printc("\t-> failed\r\n");

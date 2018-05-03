@@ -360,6 +360,7 @@ static void BootLoader_Start_CpuA(unsigned long kernel_at,char *cmdline)
 #endif
 #define NO_AIT_HDR_FW_LOAD_SZ		(2*1024*1024)
 
+    printc("BootLoader_Start_CpuA@0\r\n");
 	MMP_ULONG start_time,current_time,delta_time;
     MMP_ULONG parm_at = DRAM_ADDR + 0x100 ;
     MMP_ULONG load_addr = 0x1008000 ;
@@ -371,9 +372,13 @@ static void BootLoader_Start_CpuA(unsigned long kernel_at,char *cmdline)
     *(volatile MMP_UBYTE *)0x80006607 |= 0x20;
     *(volatile MMP_UBYTE *)0x80006617 |= 0x20;
 #endif
+
+    printc("+++MMPF_SF_FastReadData\r\n");
 	MMPF_SF_FastReadData(kernel_at, load_addr, 512);
-	
+	printc("---MMPF_SF_FastReadData\r\n");
+
     if(get_ih_item(0,(unsigned char *)load_addr)==IH_MAGIC) {
+        printc("BootLoader_Start_CpuA@1\r\n");
         MMP_ULONG offset = 0x00 ;
 	    RTNA_DBG_Str(0, "\r\nLoad linux kernel...\r\n");
 	    load_size = get_ih_item(3,(unsigned char *)load_addr) ;
@@ -396,10 +401,13 @@ static void BootLoader_Start_CpuA(unsigned long kernel_at,char *cmdline)
 	    
 	}
 	else {
+        printc("BootLoader_Start_CpuA@2\r\n");
 	    RTNA_DBG_Str(0, "\r\nLoad linux kernel(no magic)...\r\n");
 	    MMPF_SF_FastReadData(kernel_at, load_addr, NO_AIT_HDR_FW_LOAD_SZ);
 	}
+    printc("BootLoader_Start_CpuA@3\r\n");
 	kernel_entry = (void (*)(int zero, int arch, unsigned int params))(exec_addr);
+    printc("BootLoader_Start_CpuA@4\r\n");
 	current_time = OSTimeGet();
 	delta_time = current_time - start_time;
 #if DEBUG_TIMING==1
@@ -683,23 +691,27 @@ retry:
         						pIndexTable->bt.ulDownloadDstAddress, 
         						pIndexTable->bt.ulCodeSize);
 
-    		#if (CHIP == MCR_V2)
-    		if (pIndexTable->ulFlag & 0x40000000) { //check bit 30
-    			usCodeCrcValue = MMPF_SF_GetCrc();
-    			MMPF_SF_FastReadData(ulSifAddr + 0x1000, STORAGE_TEMP_BUFFER, 2); //Read CRC block value
-    			if(*((MMP_USHORT*)STORAGE_TEMP_BUFFER) == usCodeCrcValue) {
-    				RTNA_DBG_Str3("CRC pass \r\n");
-    			}
-    			else {
-    				RTNA_DBG_Str(0, "CRC check fail !!! \r\n");
-    				RTNA_DBG_PrintShort(0, usCodeCrcValue);
-    				RTNA_DBG_PrintShort(0, *((MMP_USHORT*)STORAGE_TEMP_BUFFER));
-    				while(1);
-    			}
-    		}	
-    		#endif
-    		RTNA_DBG_Str3("SIF downlod End\r\n");
-		BootLoader_Start_Rtos(MMP_TRUE,pIndexTable->bt.ulDownloadDstAddress);
+    	#if (CHIP == MCR_V2)
+    	if (pIndexTable->ulFlag & 0x40000000) { //check bit 30
+    		usCodeCrcValue = MMPF_SF_GetCrc();
+    		MMPF_SF_FastReadData(ulSifAddr + 0x1000, STORAGE_TEMP_BUFFER, 2); //Read CRC block value
+    		if(*((MMP_USHORT*)STORAGE_TEMP_BUFFER) == usCodeCrcValue) {
+    			RTNA_DBG_Str3("CRC pass \r\n");
+    		}
+    		else {
+    			RTNA_DBG_Str(0, "CRC check fail !!! \r\n");
+    			RTNA_DBG_PrintShort(0, usCodeCrcValue);
+    			RTNA_DBG_PrintShort(0, *((MMP_USHORT*)STORAGE_TEMP_BUFFER));
+    			while(1);
+    		}
+    	}	
+    	#endif
+
+    	RTNA_DBG_Str3("SIF downlod End\r\n");
+
+		printc("+++BootLoader_Start_Rtos\r\n");
+        BootLoader_Start_Rtos(MMP_TRUE,pIndexTable->bt.ulDownloadDstAddress);
+        printc("---BootLoader_Start_Rtos\r\n");
   	}
   	else {
   		RTNA_DBG_PrintLong(0, pIndexTable->ulHeader);
@@ -725,6 +737,7 @@ retry:
     BootLoader_Load_Config("ffs");
     #endif   
     #if (RUN_LINUX_ON_CPU_A)
+//    #error RUN_LINUX_ON_CPU_A
     BootLoader_Start_CpuA(kernel_at,cmdline);
     #else
     while(1) {
